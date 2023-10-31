@@ -29,11 +29,7 @@ async function handleLocationAndAdd() {
     if (!intervalId) {
       intervalId = setInterval(getLocationInfo, 60000); // 每 60 秒执行一次
     }
-
-  // FIXME：目前即使不授权也允许新增会话
-  } else {
-    handleAdd();
-  }
+  } 
 }
 
 // 销毁定时器

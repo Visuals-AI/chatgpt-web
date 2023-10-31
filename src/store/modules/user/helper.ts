@@ -15,9 +15,9 @@ export interface UserState {
 export function defaultSetting(): UserState {
   return {
     userInfo: {
-      avatar: 'https://raw.githubusercontent.com/Visuals-AI/chatgpt-docker/master/imgs/avatar.jpg',
+      avatar: 'https://raw.githubusercontent.com/Visuals-AI/chatgpt-docker/master/imgs/girl.jpg',
       name: 'ChatGPT-Docker',
-      description: 'Star on <a href="https://github.com/Visuals-AI/chatgpt-docker" class="text-blue-500" target="_blank" >GitHub</a>',
+      description: '仅亲友使用，请勿分发',
     },
   }
 }
