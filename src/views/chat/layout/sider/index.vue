@@ -20,6 +20,8 @@ const collapsed = computed(() => appStore.siderCollapsed)
 
 
 let intervalId: NodeJS.Timeout | null = null;
+
+// @ts-ignore
 async function handleLocationAndAdd() {
   const isOk = await getLocationInfo();
 
@@ -43,6 +45,7 @@ onUnmounted(() => {
   }
 });
 
+// @ts-ignore
 async function getLocationInfo() {
   // const ip = await getIPAddress() as string;
   const userAgent = getUserAgent();
@@ -155,11 +158,12 @@ watch(
     <div class="flex flex-col h-full" :style="mobileSafeArea">
       <main class="flex flex-col flex-1 min-h-0">
         <div class="p-4">
-          <label class="block mb-2 text-red-500">
+          <!-- <label class="block mb-2 text-red-500">
             {{ $t('chat.tips') }}
-          </label>
+          </label> -->
 
-          <NButton dashed block @click="handleLocationAndAdd">
+          <NButton dashed block @click="handleAdd">
+          <!-- <NButton dashed block @click="handleLocationAndAdd"> -->
             {{ $t('chat.newChatButton') }}
           </NButton>
         </div>
