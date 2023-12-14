@@ -1,7 +1,11 @@
 import * as dotenv from 'dotenv'
 import 'isomorphic-fetch'
+
+// 真正和 ChatGPT 交互的是这个库，缓存历史会话到 Local Store 的也是这个库，原理是把过往聊天记录编织成一条链，每次交互都完整发送整条会话链
+// https://github.com/transitive-bullshit/chatgpt-api
 import type { ChatGPTAPIOptions, ChatMessage, SendMessageOptions } from 'chatgpt'
 import { ChatGPTAPI, ChatGPTUnofficialProxyAPI } from 'chatgpt'
+
 import { SocksProxyAgent } from 'socks-proxy-agent'
 import httpsProxyAgent from 'https-proxy-agent'
 import fetch from 'node-fetch'
@@ -94,16 +98,19 @@ async function chatReplyProcess(options: RequestOptions) {
     let options: SendMessageOptions = { timeoutMs }
 
     if (apiModel === 'ChatGPTAPI') {
-      if (isNotEmptyString(systemMessage))
+      if (isNotEmptyString(systemMessage)) {
         options.systemMessage = systemMessage
+      }
       options.completionParams = { model, temperature, top_p }
     }
 
     if (lastContext != null) {
-      if (apiModel === 'ChatGPTAPI')
+      if (apiModel === 'ChatGPTAPI') {
         options.parentMessageId = lastContext.parentMessageId
-      else
+        // options.parentMessageId = ""
+      } else {
         options = { ...lastContext }
+      }
     }
 
     const response = await api.sendMessage(message, {
