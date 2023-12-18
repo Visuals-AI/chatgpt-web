@@ -4,7 +4,9 @@ import 'isomorphic-fetch'
 // 真正和 ChatGPT 交互的是这个库，缓存历史会话到 Local Store 的也是这个库，原理是把过往聊天记录编织成一条链，每次交互都完整发送整条会话链
 // https://github.com/transitive-bullshit/chatgpt-api
 import type { ChatGPTAPIOptions, ChatMessage, SendMessageOptions } from 'chatgpt'
-import { ChatGPTAPI, ChatGPTUnofficialProxyAPI } from 'chatgpt'
+import { ChatGPTUnofficialProxyAPI } from 'chatgpt'
+import { CustomChatGPTAPI } from './CustomChatGPTAPI';
+
 
 import { SocksProxyAgent } from 'socks-proxy-agent'
 import httpsProxyAgent from 'https-proxy-agent'
@@ -36,7 +38,7 @@ const model = isNotEmptyString(process.env.OPENAI_API_MODEL) ? process.env.OPENA
 if (!isNotEmptyString(process.env.OPENAI_API_KEY) && !isNotEmptyString(process.env.OPENAI_ACCESS_TOKEN))
   throw new Error('Missing OPENAI_API_KEY or OPENAI_ACCESS_TOKEN environment variable')
 
-let api: ChatGPTAPI | ChatGPTUnofficialProxyAPI
+let api: CustomChatGPTAPI | ChatGPTUnofficialProxyAPI
 
 (async () => {
   // More Info: https://github.com/transitive-bullshit/chatgpt-api
@@ -74,7 +76,7 @@ let api: ChatGPTAPI | ChatGPTUnofficialProxyAPI
 
     setupProxy(options)
 
-    api = new ChatGPTAPI({ ...options })
+    api = new CustomChatGPTAPI({ ...options })
     apiModel = 'ChatGPTAPI'
   }
   else {
@@ -92,8 +94,11 @@ let api: ChatGPTAPI | ChatGPTUnofficialProxyAPI
   }
 })()
 
+
 async function chatReplyProcess(options: RequestOptions) {
   const { message, lastContext, process, systemMessage, temperature, top_p } = options
+  console.log("message= " + JSON.stringify(message));
+  console.log("lastContext= " + JSON.stringify(lastContext));
   try {
     let options: SendMessageOptions = { timeoutMs }
 
@@ -108,6 +113,17 @@ async function chatReplyProcess(options: RequestOptions) {
       if (apiModel === 'ChatGPTAPI') {
         options.parentMessageId = lastContext.parentMessageId
         // options.parentMessageId = ""
+
+        var fmsg = await api._getMessageById(options.parentMessageId);
+        console.log("fmsg= " + JSON.stringify(fmsg));
+
+        try {
+          var ffmsg = await api._getMessageById(fmsg.parentMessageId);
+          console.log("ffmsg= " + JSON.stringify(ffmsg));
+          ffmsg.parentMessageId = ""
+        } catch (error: any) {
+          console.log("err");
+        }
       } else {
         options = { ...lastContext }
       }
