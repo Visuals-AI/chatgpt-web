@@ -97,8 +97,6 @@ let api: CustomChatGPTAPI | ChatGPTUnofficialProxyAPI
 
 async function chatReplyProcess(options: RequestOptions) {
   const { message, lastContext, process, systemMessage, temperature, top_p } = options
-  console.log("message= " + JSON.stringify(message));
-  console.log("lastContext= " + JSON.stringify(lastContext));
   try {
     let options: SendMessageOptions = { timeoutMs }
 
@@ -112,18 +110,6 @@ async function chatReplyProcess(options: RequestOptions) {
     if (lastContext != null) {
       if (apiModel === 'ChatGPTAPI') {
         options.parentMessageId = lastContext.parentMessageId
-        // options.parentMessageId = ""
-
-        var fmsg = await api._getMessageById(options.parentMessageId);
-        console.log("fmsg= " + JSON.stringify(fmsg));
-
-        try {
-          var ffmsg = await api._getMessageById(fmsg.parentMessageId);
-          console.log("ffmsg= " + JSON.stringify(ffmsg));
-          ffmsg.parentMessageId = ""
-        } catch (error: any) {
-          console.log("err");
-        }
       } else {
         options = { ...lastContext }
       }

@@ -35,7 +35,7 @@ export class CustomChatGPTAPI extends ChatGPTAPI {
     let numTokens = 0
 
     var cnt = 0
-    const MAX_HISTORT = 20
+    const MAX_HISTORT = 5
     do {
       const prompt = nextMessages
         .reduce((prompt, message) => {
