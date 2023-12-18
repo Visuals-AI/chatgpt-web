@@ -41,6 +41,8 @@ spec:
               value: ''
             - name: HTTPS_PROXY
               value: ''
+            - name: MAX_HISTORT
+              value: '0'
           resources:
             limits:
               cpu: 500m

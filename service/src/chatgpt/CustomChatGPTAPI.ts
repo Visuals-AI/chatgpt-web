@@ -2,6 +2,7 @@ import { ChatGPTAPI } from 'chatgpt'
 
 const USER_LABEL_DEFAULT = 'User'
 const ASSISTANT_LABEL_DEFAULT = 'ChatGPT'
+const DEFAULT_MAX_HISTORT = 0
 
 export class CustomChatGPTAPI extends ChatGPTAPI {
 
@@ -35,7 +36,7 @@ export class CustomChatGPTAPI extends ChatGPTAPI {
     let numTokens = 0
 
     var cnt = 0
-    const MAX_HISTORT = 20
+    const MAX_HISTORT = opts.maxHistory || DEFAULT_MAX_HISTORT
     do {
       const prompt = nextMessages
         .reduce((prompt, message) => {
@@ -86,7 +87,7 @@ export class CustomChatGPTAPI extends ChatGPTAPI {
 
       parentMessageId = parentMessage.parentMessageId
       cnt += 1
-    } while (cnt < MAX_HISTORT)
+    } while (MAX_HISTORT <= 0 || cnt < MAX_HISTORT)
     // } while (true)
 
     // Use up to 4096 tokens (prompt + response), but try to leave 1000 tokens

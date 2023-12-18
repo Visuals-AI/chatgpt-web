@@ -29,8 +29,10 @@ const ErrorCodeMessage: Record<string, string> = {
   500: '[OpenAI] 服务器繁忙，请稍后再试 | Internal Server Error',
 }
 
+const maxHistory: number = !isNaN(+process.env.MAX_HISTORT) ? +process.env.MAX_HISTORT : 0
 const timeoutMs: number = !isNaN(+process.env.TIMEOUT_MS) ? +process.env.TIMEOUT_MS : 100 * 1000
 const disableDebug: boolean = process.env.OPENAI_API_DISABLE_DEBUG === 'true'
+
 
 let apiModel: ApiModel
 const model = isNotEmptyString(process.env.OPENAI_API_MODEL) ? process.env.OPENAI_API_MODEL : 'gpt-3.5-turbo'
@@ -116,7 +118,8 @@ async function chatReplyProcess(options: RequestOptions) {
     }
 
     const response = await api.sendMessage(message, {
-      ...options,
+      ...options, 
+      maxHistory: maxHistory, 
       onProgress: (partialResponse) => {
         process?.(partialResponse)
       },
